@@ -1,6 +1,12 @@
 body {
     margin: 0;
     background-color: #000;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #calculator-wrapper {
@@ -20,6 +26,14 @@ section.main-container {
     flex-wrap: nowrap;
     align-content: center;
     align-items: center;
+}
+
+button.calculator-button.operator-button {
+    background-color: #c7c7c7;
+}
+
+button.calculator-button.function-button {
+    background-color: #9b9b9b;
 }
 
 section.main-container button {
@@ -62,8 +76,74 @@ section#display-container {
 p#operator-indicator {
     position: absolute;
     right: 1%;
-    top:  1%;
+    top: 1%;
     font-size: 2em;
     margin: 0;
 
+}
+
+em#message-field {
+    position: absolute;
+    left: 1%;
+    top: 1%;
+    font-size: 1em;
+    margin: 0;
+}
+
+aside#history {
+    border: 2px solid #000;
+    background-color: #999999;
+    width: 19vw;
+    height: 60vh;
+    position: absolute;
+    box-sizing: border-box;
+    left: 10%;
+    padding: 1%;
+    box-shadow: 0px 0px 20px 10px inset #424040;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
+
+aside#history::-webkit-scrollbar {
+    width: 10px;
+}
+
+aside#history::-webkit-scrollbar-track {
+    background: #999999;
+    ;
+}
+
+aside#history::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+aside#history::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+p.history-entry {
+    font-weight: bold;
+    padding: 2px;
+    border-bottom: solid 1px #000;
+    position: relative;
+    display: inline-block;
+
+}
+
+p.history-entry:hover {
+    background-color: #dddbdba6;
+
+}
+
+span.history-entry-deletion {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    padding: 2px 3px;
+}
+
+span.history-entry-deletion:hover {
+    text-shadow: #ffffff 0 0 10px 10px;
 }

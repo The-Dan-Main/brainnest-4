@@ -1,16 +1,21 @@
 'strict use'
-const allButtons = document.querySelectorAll("button.calculator-button"),
+const
+    allButtons = document.querySelectorAll("button.calculator-button"),
     functionButtons = document.querySelectorAll("button.function-button"),
     operatorButtons = document.querySelectorAll("button.operator-button"),
     numberButtons = document.querySelectorAll("button.number-button"),
     display = document.querySelector("aside#display"),
-    operatorIndicator = document.querySelector("#operator-indicator")
+    operatorIndicator = document.querySelector("#operator-indicator"),
+    messagefield = document.querySelector("em#message-field"),
+    historyfield = document.querySelector("aside#history")
 
-let total,
+let
+    total,
     leftInputNumber,
     rightInputNumber,
     currentOperator,
-    output
+    output,
+    history = []
 
 const updateDisplay = () => {
     display.textContent = output
@@ -23,7 +28,13 @@ const handleNumberInput = (number) => {
             output = leftInputNumber
             updateDisplay()
         } else {
-            if (leftInputNumber.includes(".") && number === ".") return console.log("already a period there buddy!")
+            if (leftInputNumber.includes(".") && number === ".") {
+                messagefield.textContent = "You have already a period there, buddy!"
+                setTimeout(() => {
+                    messagefield.textContent = ""
+                }, 1000);
+                return null
+            }
             leftInputNumber += number
             output = leftInputNumber
             updateDisplay()
@@ -36,7 +47,13 @@ const handleNumberInput = (number) => {
             updateDisplay()
 
         } else {
-            if (rightInputNumber.includes(".") && number === ".") return console.log("already a period there buddy!")
+            if (rightInputNumber.includes(".") && number === ".") {
+                messagefield.textContent = "You have already a period there, buddy!"
+                setTimeout(() => {
+                    messagefield.textContent = ""
+                }, 1000);
+                return null
+            }
             rightInputNumber += number
             output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
             updateDisplay()
@@ -71,6 +88,8 @@ const handleFunctionInput = (inputFunction) => {
         revertPolationOfNumber()
     } else if (inputFunction === "=") {
         evaluateTotal()
+    } else if (inputFunction === "%") {
+        changeToPercentage()
     }
 }
 
@@ -88,14 +107,58 @@ const revertPolationOfNumber = () => {
 
 }
 
+const changeToPercentage = () => { 
+    if (leftInputNumber === undefined) { return null }
+    else if (rightInputNumber === undefined) {
+        leftInputNumber = leftInputNumber / 100
+        output = leftInputNumber
+        updateDisplay()
+    } else {
+        rightInputNumber = rightInputNumber / 100
+        output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+        updateDisplay()
+    }
+ }
+
+const updateHistory = (newHistoryInput) => { 
+    history.push(newHistoryInput)
+    historyfield.textContent = ""
+    history.forEach((entry) => {
+        const newEntry = document.createElement("p")
+        const deleteButton = document.createElement("span")
+        deleteButton.textContent = "X"
+        deleteButton.classList.add("history-entry-deletion")
+        deleteButton.addEventListener("click", (e) => {
+            historyfield.removeChild(newEntry)
+            let itemContent = e.target.parentElement.textContent
+            itemContent = itemContent.substring(0, itemContent.length -1)
+            history = history.filter((item) => item != itemContent)
+        })
+        newEntry.addEventListener("dblclick", (e) => {
+            console.log();
+            let historyItem = e.target.textContent
+            historyItem = historyItem.substring(0, historyItem.length - 1)
+            console.log(historyItem);
+            output = historyItem
+            updateDisplay()
+        })
+        newEntry.textContent = entry
+        newEntry.classList.add("history-entry")
+        historyfield.appendChild(newEntry)
+        newEntry.appendChild(deleteButton)
+    })
+ }
+
 const evaluateTotal = () => {
     if (output === undefined || output === "") return null
+    updateHistory(output)
     const newTotal = `${eval(output)}`
-    console.log(newTotal);
-    if (newTotal == NaN || newTotal == Infinity) {
-        output = "Your math just destroyed a city!"
+    if (newTotal == "NaN" || newTotal == Infinity) {
+        messagefield.textContent = "Your math just created a wormhole!"
+        output = "Dividing by zero? Really?"
         updateDisplay()
         setTimeout(() => {
+            messagefield.textContent = ""
             clearDisplay()
         }, 1000);
         return null
@@ -133,26 +196,17 @@ const clearDisplay = () => {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const deleteLastCharacter = () => {
+    if (rightInputNumber === undefined) {
+        leftInputNumber = leftInputNumber.substring(0, leftInputNumber.length - 1)
+        output = leftInputNumber
+        updateDisplay()
+    } else {
+        rightInputNumber = rightInputNumber.substring(0, rightInputNumber.length - 1)
+        output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+        updateDisplay()
+    }
+}
 
 const handleInput = (key) => {
     if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."].includes(key)) {
@@ -164,7 +218,9 @@ const handleInput = (key) => {
     } else if (key === "Delete") {
         clearDisplay()
     } else if (key === "Backspace") {
-        console.log(`backspace pressed!`);
+        deleteLastCharacter()
+    } else if (key === "%") {
+        changeToPercentage()
     }
 }
 
