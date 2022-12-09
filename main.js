@@ -128,6 +128,8 @@ const updateHistory = (newHistoryInput) => {
         const deleteButton = document.createElement("span")
         deleteButton.textContent = "X"
         deleteButton.classList.add("history-entry-deletion")
+        deleteButton.setAttribute("title", "click me to delete from history")
+        newEntry.setAttribute("title","double click me to insert this calculation")
         deleteButton.addEventListener("click", (e) => {
             historyfield.removeChild(newEntry)
             let itemContent = e.target.parentElement.textContent

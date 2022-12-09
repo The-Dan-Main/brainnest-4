@@ -12,6 +12,38 @@
     <title>Count on Me!</title>
 </head>
 <body>
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">
+        ❅
+        </div>
+        <div class="snowflake">
+        ❅
+        </div>
+        <div class="snowflake">
+        ❆
+        </div>
+        <div class="snowflake">
+        ❄
+        </div>
+        <div class="snowflake">
+        ❅
+        </div>
+        <div class="snowflake">
+        ❆
+        </div>
+        <div class="snowflake">
+        ❄
+        </div>
+        <div class="snowflake">
+        ❅
+        </div>
+        <div class="snowflake">
+        ❆
+        </div>
+        <div class="snowflake">
+        ❄
+        </div>
+      </div>
     <main id="calculator-wrapper">
         <aside id="history">
         </aside>
@@ -19,36 +51,36 @@
             <aside id="display"></aside>
             <p id="operator-indicator"></p>
             <em id="message-field"></em>
-            <button id="delete">←</button>
+            <button id="delete" class="backspace" title="delete last inserted character">←</button>
         </section>
         <section class="main-container function-container">
-            <button class="calculator-button function-button">AC</button>
-            <button class="calculator-button function-button">+/-</button>
-            <button class="calculator-button function-button">%</button>
-            <button class="calculator-button operator-button">/</button>
+            <button class="calculator-button function-button" title="erase whole calculation">AC</button>
+            <button class="calculator-button function-button" title="invert number to opposite">+/-</button>
+            <button class="calculator-button function-button" title="change number to percentage">%</button>
+            <button class="calculator-button operator-button" title="divide">/</button>
         </section>
         <section class="main-container">
             <button class="calculator-button number-button">7</button>
             <button class="calculator-button number-button">8</button>
             <button class="calculator-button number-button">9</button>
-            <button class="calculator-button operator-button">*</button>
+            <button class="calculator-button operator-button" title="multiply">*</button>
         </section>
         <section class="main-container">
             <button class="calculator-button number-button">4</button>
             <button class="calculator-button number-button">5</button>
             <button class="calculator-button number-button">6</button>
-            <button class="calculator-button operator-button">-</button>
+            <button class="calculator-button operator-button" title="subtract">-</button>
         </section>
         <section class="main-container">
             <button class="calculator-button number-button">1</button>
             <button class="calculator-button number-button">2</button>
             <button class="calculator-button number-button">3</button>
-            <button class="calculator-button operator-button">+</button>
+            <button class="calculator-button operator-button" title="add">+</button>
         </section>
         <section class="main-container">
             <button class="calculator-button number-button" id="zero">0</button>
-            <button class="calculator-button number-button">.</button>
-            <button class="calculator-button function-button">=</button>
+            <button class="calculator-button number-button" title="add period to create floating numbers" >.</button>
+            <button class="calculator-button function-button" title="evaluate current calculation">=</button>
         </section>
     </main>
 </body>
