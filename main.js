@@ -4,6 +4,7 @@ const
     functionButtons = document.querySelectorAll("button.function-button"),
     operatorButtons = document.querySelectorAll("button.operator-button"),
     numberButtons = document.querySelectorAll("button.number-button"),
+    deleteButton = document.querySelector("button#delete"),
     display = document.querySelector("aside#display"),
     operatorIndicator = document.querySelector("#operator-indicator"),
     messagefield = document.querySelector("em#message-field"),
@@ -96,25 +97,24 @@ const handleFunctionInput = (inputFunction) => {
 const revertPolationOfNumber = () => {
     if (leftInputNumber === undefined) { return null }
     else if (rightInputNumber === undefined) {
-        leftInputNumber = leftInputNumber * (-1)
+        leftInputNumber = `${leftInputNumber * (-1)}`
         output = leftInputNumber
         updateDisplay()
     } else {
-        rightInputNumber = rightInputNumber * (-1)
+        rightInputNumber = `${rightInputNumber * (-1)}`
         output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
         updateDisplay()
     }
-
 }
 
 const changeToPercentage = () => { 
     if (leftInputNumber === undefined) { return null }
     else if (rightInputNumber === undefined) {
-        leftInputNumber = leftInputNumber / 100
+        leftInputNumber = `${leftInputNumber / 100}`
         output = leftInputNumber
         updateDisplay()
     } else {
-        rightInputNumber = rightInputNumber / 100
+        rightInputNumber = `${rightInputNumber / 100}`
         output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
         updateDisplay()
     }
@@ -198,6 +198,7 @@ const clearDisplay = () => {
 
 const deleteLastCharacter = () => {
     if (rightInputNumber === undefined) {
+        console.log(leftInputNumber);
         leftInputNumber = leftInputNumber.substring(0, leftInputNumber.length - 1)
         output = leftInputNumber
         updateDisplay()
@@ -245,3 +246,7 @@ numberButtons.forEach(button => {
         handleNumberInput(e.target.textContent)
     })
 });
+
+deleteButton.addEventListener("click", () => {
+    deleteLastCharacter()
+})
