@@ -5,6 +5,7 @@ const
     operatorButtons = document.querySelectorAll("button.operator-button"),
     numberButtons = document.querySelectorAll("button.number-button"),
     deleteButton = document.querySelector("button#delete"),
+    periodButton = document.querySelector("button.period-button"),
     display = document.querySelector("aside#display"),
     operatorIndicator = document.querySelector("#operator-indicator"),
     messagefield = document.querySelector("em#message-field"),
@@ -12,74 +13,99 @@ const
 
 let
     total,
-    leftInputNumber,
+    leftInputNumber = 0,
     rightInputNumber,
     currentOperator,
     output,
     history = []
 
 const updateDisplay = () => {
-    display.textContent = output
+    display.textContent = `${leftInputNumber !== undefined ? leftInputNumber : ""} ${currentOperator !== undefined ? currentOperator : ""} ${rightInputNumber !== undefined ? rightInputNumber : ""}`
 }
+updateDisplay()
 
 const handleNumberInput = (number) => {
+    number = parseInt(number)
     if (currentOperator === undefined) {
-        if (leftInputNumber === undefined) {
-            leftInputNumber = number
-            output = leftInputNumber
+        if (leftInputNumber === 0) {
+            leftInputNumber = parseInt(number)
             updateDisplay()
         } else {
-            if (leftInputNumber.includes(".") && number === ".") {
-                messagefield.textContent = "You have already a period there, buddy!"
-                setTimeout(() => {
-                    messagefield.textContent = ""
-                }, 1000);
-                return null
+            if (leftInputNumber === 0 && number !== 0) {
+                leftInputNumber = number
+                updateDisplay()
             }
-            leftInputNumber += number
-            output = leftInputNumber
-            updateDisplay()
+            else {
+                leftInputNumber = `${leftInputNumber}${number}`
+                leftInputNumber =  leftInputNumber.includes(".") ? parseFloat(leftInputNumber) : parseInt(leftInputNumber)
+                updateDisplay()
+            }
         }
     } else {
         operatorIndicator.textContent = ""
         if (rightInputNumber === undefined) {
-            rightInputNumber = number
+            rightInputNumber = parseInt(number)
             output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
             updateDisplay()
-
         } else {
-            if (rightInputNumber.includes(".") && number === ".") {
-                messagefield.textContent = "You have already a period there, buddy!"
-                setTimeout(() => {
-                    messagefield.textContent = ""
-                }, 1000);
-                return null
+            if (rightInputNumber === 0 && number === 0) return null
+            else {
+                rightInputNumber = `${rightInputNumber}${number}`
+                rightInputNumber = rightInputNumber.includes(".") ? parseFloat(rightInputNumber) : parseInt(rightInputNumber)
+                output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+                updateDisplay()
             }
-            rightInputNumber += number
-            output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
-            updateDisplay()
         }
     }
 }
 
+const handlePeriodInput = () => {
+    if (leftInputNumber === 0) {
+        leftInputNumber = `${leftInputNumber}.`
+        updateDisplay()
+        return null
+    }
+    if (leftInputNumber !== undefined && currentOperator === undefined) {
+        if (leftInputNumber.toString().includes(".")) {
+            messagefield.textContent = "You have already a period there, buddy!"
+            setTimeout(() => {
+                messagefield.textContent = ""
+            }, 1000);
+            return null
+        }
+        leftInputNumber = `${leftInputNumber}.`
+        updateDisplay()
+        return null
+    } else {
+        if (rightInputNumber.toString().includes(".")) {
+            messagefield.textContent = "You have already a period there, buddy!"
+            setTimeout(() => {
+                messagefield.textContent = ""
+            }, 1000);
+            return null
+        }
+        rightInputNumber = `${rightInputNumber}.`
+        updateDisplay()
+        return null
+    }
+}
+
+
 const handleOperatorInput = (operator) => {
     if (currentOperator !== undefined && rightInputNumber !== undefined) {
-        evaluateTotal()
+        caluateTotal()
         currentOperator = operator
-        operatorIndicator.textContent = operator
         updateDisplay()
     } else {
-        if (leftInputNumber !== undefined) {
-            operatorIndicator.textContent = operator
+        if (rightInputNumber !== undefined) {
             currentOperator = operator
-            output = eval(output)
+            caluateTotal()
             updateDisplay()
         } else {
-            output = "Please enter a number first"
+            currentOperator = operator
             updateDisplay()
         }
     }
-
 }
 
 const handleFunctionInput = (inputFunction) => {
@@ -88,39 +114,35 @@ const handleFunctionInput = (inputFunction) => {
     } else if (inputFunction === "+/-") {
         revertPolationOfNumber()
     } else if (inputFunction === "=") {
-        evaluateTotal()
+        caluateTotal()
     } else if (inputFunction === "%") {
         changeToPercentage()
     }
 }
 
 const revertPolationOfNumber = () => {
-    if (leftInputNumber === undefined) { return null }
-    else if (rightInputNumber === undefined) {
-        leftInputNumber = `${leftInputNumber * (-1)}`
-        output = leftInputNumber
+    if (leftInputNumber === undefined) return null
+    if (rightInputNumber === undefined) {
+        leftInputNumber = leftInputNumber * (-1)
         updateDisplay()
     } else {
-        rightInputNumber = `${rightInputNumber * (-1)}`
-        output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+        rightInputNumber = rightInputNumber * (-1)
         updateDisplay()
     }
 }
 
-const changeToPercentage = () => { 
-    if (leftInputNumber === undefined) { return null }
-    else if (rightInputNumber === undefined) {
-        leftInputNumber = `${leftInputNumber / 100}`
-        output = leftInputNumber
+const changeToPercentage = () => {
+    if (leftInputNumber === undefined) return null
+    if (rightInputNumber === undefined) {
+        leftInputNumber = leftInputNumber / 100
         updateDisplay()
     } else {
-        rightInputNumber = `${rightInputNumber / 100}`
-        output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+        rightInputNumber = rightInputNumber / 100
         updateDisplay()
     }
- }
+}
 
-const updateHistory = (newHistoryInput) => { 
+const updateHistory = (newHistoryInput) => {
     history.push(newHistoryInput)
     historyfield.textContent = ""
     history.forEach((entry) => {
@@ -128,94 +150,99 @@ const updateHistory = (newHistoryInput) => {
         const deleteButton = document.createElement("span")
         deleteButton.textContent = "X"
         deleteButton.classList.add("history-entry-deletion")
-        deleteButton.setAttribute("title", "click me to delete from history")
-        newEntry.setAttribute("title","double click me to insert this calculation")
+        deleteButton.setAttribute("title", "click here to delete from history")
         deleteButton.addEventListener("click", (e) => {
             historyfield.removeChild(newEntry)
             let itemContent = e.target.parentElement.textContent
-            itemContent = itemContent.substring(0, itemContent.length -1)
+            itemContent = itemContent.substring(0, itemContent.length - 1)
             history = history.filter((item) => item != itemContent)
-        })
-        newEntry.addEventListener("dblclick", (e) => {
-            console.log();
-            let historyItem = e.target.textContent
-            historyItem = historyItem.substring(0, historyItem.length - 1)
-            console.log(historyItem);
-            output = historyItem
-            updateDisplay()
         })
         newEntry.textContent = entry
         newEntry.classList.add("history-entry")
         historyfield.appendChild(newEntry)
         newEntry.appendChild(deleteButton)
     })
- }
+}
 
-const evaluateTotal = () => {
-    if (output === undefined || output === "") return null
-    updateHistory(output)
-    const newTotal = `${eval(output)}`
-    if (newTotal == "NaN" || newTotal == Infinity) {
+const caluateTotal = () => {
+    updateHistory(`${leftInputNumber !== undefined ? leftInputNumber : ""} ${currentOperator !== undefined ? currentOperator : ""} ${rightInputNumber !== undefined ? rightInputNumber : ""}`)
+    switch (currentOperator) {
+        case "-":
+            leftInputNumber = leftInputNumber - rightInputNumber
+            break;
+        case "+":
+            leftInputNumber = leftInputNumber + rightInputNumber
+            break;
+        case "/":
+            leftInputNumber = leftInputNumber / rightInputNumber
+            break;
+        case "*":
+            leftInputNumber = leftInputNumber * rightInputNumber
+            break;
+    }
+    const leftNumberString = leftInputNumber.toString()
+    const lengthAfterPeriod = leftNumberString.length - leftNumberString.indexOf(".") - 1
+    if (leftNumberString.includes(".") && lengthAfterPeriod > 5) {
+        leftInputNumber = parseFloat(leftNumberString).toFixed(5)
+    } else if (leftNumberString.includes(".") && lengthAfterPeriod < 5) {
+        leftInputNumber = parseFloat(leftNumberString).toFixed(lengthAfterPeriod)
+    }
+    if (leftInputNumber === undefined || leftInputNumber === "") return 0
+    if (leftInputNumber == "NaN" || leftInputNumber == Infinity) {
         messagefield.textContent = "Your math just created a wormhole!"
-        output = "Dividing by zero? Really?"
+        rightInputNumber, currentOperator = ""
+        leftInputNumber = "Dividing by zero? Really?"
         updateDisplay()
         setTimeout(() => {
             messagefield.textContent = ""
             clearDisplay()
         }, 1000);
-        return null
+        return 0
     }
-    const lengthAfterPeriod = newTotal.length - newTotal.indexOf(".") - 1
-    if (newTotal.includes(".") && lengthAfterPeriod > 10) {
-        output = eval(output).toFixed(10)
-    } else if (newTotal.includes(".") && lengthAfterPeriod < 10) {
-        output = eval(output).toFixed(lengthAfterPeriod)
-    } else {
-        output = eval(output)
-    }
-
-    total = `${output}`
-    leftInputNumber = `${output}`
     rightInputNumber = undefined
     currentOperator = undefined
-    operatorIndicator.textContent = ""
     updateDisplay()
 }
 
 const clearDisplay = () => {
-    if (output !== undefined) {
-        output = "erasing calculation..."
-        updateDisplay()
-        setTimeout(() => {
-            total = undefined
-            leftInputNumber = undefined
-            rightInputNumber = undefined
-            currentOperator = undefined
-            output = undefined
-            operatorIndicator.textContent = ""
-            updateDisplay()
-        }, 1000);
-    }
+    total = undefined
+    leftInputNumber = 0
+    rightInputNumber = undefined
+    currentOperator = undefined
+    output = undefined
+    operatorIndicator.textContent = ""
+    updateDisplay()
 }
 
 const deleteLastCharacter = () => {
     if (rightInputNumber === undefined) {
-        console.log(leftInputNumber);
-        leftInputNumber = leftInputNumber.substring(0, leftInputNumber.length - 1)
-        output = leftInputNumber
+        leftInputNumber = leftInputNumber.toString().slice(0, -1) === "" ? 0 : parseFloat(leftInputNumber.toString().slice(0, -1))
         updateDisplay()
     } else {
-        rightInputNumber = rightInputNumber.substring(0, rightInputNumber.length - 1)
-        output = `${leftInputNumber}   ${currentOperator}   ${rightInputNumber}`
+        rightInputNumber = rightInputNumber.toString().slice(0, -1) === "" ? 0 : parseFloat(rightInputNumber.toString().slice(0, -1))
         updateDisplay()
     }
 }
 
+const visualizeKeyPress = (key) => { 
+    allButtons.forEach(button => {
+        if (button.dataset.value.includes(key)) {
+            button.classList.add("activeKeyPress")
+            setTimeout(() => {
+                button.classList.remove(("activeKeyPress"))
+            }, 200);
+        }
+    });
+ }
+
 const handleInput = (key) => {
-    if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."].includes(key)) {
+    visualizeKeyPress(key)
+    if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(key)) {
         handleNumberInput(key)
+    } else if (key === "." || key === ",") {
+        handlePeriodInput()
     } else if (key === "=" || key === "Enter") {
-        evaluateTotal()
+        caluateTotal()
     } else if (["+", "-", "*", "/"].includes(key)) {
         handleOperatorInput(key)
     } else if (key === "Delete") {
@@ -224,6 +251,8 @@ const handleInput = (key) => {
         deleteLastCharacter()
     } else if (key === "%") {
         changeToPercentage()
+    } else if (key === "i") {
+        revertPolationOfNumber()
     }
 }
 
@@ -251,4 +280,8 @@ numberButtons.forEach(button => {
 
 deleteButton.addEventListener("click", () => {
     deleteLastCharacter()
+})
+
+periodButton.addEventListener("click", () => {
+    handlePeriodInput()
 })

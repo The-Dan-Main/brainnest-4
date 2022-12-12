@@ -93,6 +93,10 @@ section.main-container button:hover {
     box-shadow: 0px 0px 8px 0px inset;
 }
 
+.activeKeyPress {
+    box-shadow: 0px 0px 8px 0px inset;
+}
+
 section#display-container {
     position: relative;
 }

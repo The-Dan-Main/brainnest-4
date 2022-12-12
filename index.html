@@ -51,36 +51,36 @@
             <aside id="display"></aside>
             <p id="operator-indicator"></p>
             <em id="message-field"></em>
-            <button id="delete" class="backspace" title="delete last inserted character">←</button>
+            <button id="delete" class="backspace" title="delete last inserted character" data-value="Backspace">←</button>
         </section>
         <section class="main-container function-container">
-            <button class="calculator-button function-button" title="erase whole calculation">AC</button>
-            <button class="calculator-button function-button" title="invert number to opposite">+/-</button>
-            <button class="calculator-button function-button" title="change number to percentage">%</button>
-            <button class="calculator-button operator-button" title="divide">/</button>
+            <button class="calculator-button function-button" title="erase whole calculation" data-value="Delete">AC</button>
+            <button class="calculator-button function-button" title="invert number to opposite // Press key 'i' for keyboard support" data-value="i">+/-</button>
+            <button class="calculator-button function-button" title="change number to percentage" data-value="%">%</button>
+            <button class="calculator-button operator-button" title="divide" data-value="/">/</button>
         </section>
         <section class="main-container">
-            <button class="calculator-button number-button">7</button>
-            <button class="calculator-button number-button">8</button>
-            <button class="calculator-button number-button">9</button>
-            <button class="calculator-button operator-button" title="multiply">*</button>
+            <button class="calculator-button number-button" data-value="7">7</button>
+            <button class="calculator-button number-button" data-value="8">8</button>
+            <button class="calculator-button number-button" data-value="9">9</button>
+            <button class="calculator-button operator-button" title="multiply" data-value="*">*</button>
         </section>
         <section class="main-container">
-            <button class="calculator-button number-button">4</button>
-            <button class="calculator-button number-button">5</button>
-            <button class="calculator-button number-button">6</button>
-            <button class="calculator-button operator-button" title="subtract">-</button>
+            <button class="calculator-button number-button" data-value="4">4</button>
+            <button class="calculator-button number-button" data-value="5">5</button>
+            <button class="calculator-button number-button" data-value="6">6</button>
+            <button class="calculator-button operator-button" title="subtract" data-value="-">-</button>
         </section>
         <section class="main-container">
-            <button class="calculator-button number-button">1</button>
-            <button class="calculator-button number-button">2</button>
-            <button class="calculator-button number-button">3</button>
-            <button class="calculator-button operator-button" title="add">+</button>
+            <button class="calculator-button number-button" data-value="1">1</button>
+            <button class="calculator-button number-button" data-value="2">2</button>
+            <button class="calculator-button number-button" data-value="3">3</button>
+            <button class="calculator-button operator-button" title="add" data-value="+">+</button>
         </section>
         <section class="main-container">
-            <button class="calculator-button number-button" id="zero">0</button>
-            <button class="calculator-button number-button" title="add period to create floating numbers" >.</button>
-            <button class="calculator-button function-button" title="evaluate current calculation">=</button>
+            <button class="calculator-button number-button" id="zero" data-value="0">0</button>
+            <button class="calculator-button period-button" title="add period to create floating numbers" data-value=",.">.</button>
+            <button class="calculator-button function-button" title="evaluate current calculation" data-value="Enter">=</button>
         </section>
     </main>
 </body>
